@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dinner Reservation</title>
+  <style>
+    body {
+      font-family: Arial;
+    }
+    fieldset {
+      width: 300px;
+      border: 1px solid black;
+      padding: 10px;
+    }
+    input[type="text"].error {
+      background-color: #fdd;
+    }
+    input[type="text"].valid {
+      background-color: #fff;
+    }
+    #message {
+      margin-left: 10px;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <fieldset>
+    <h3>Booking place for your dinner!</h3>
+
+    <label for="name">Name:</label>
+    <input type="text" id="name">
+    <br><br>
+
+    <label for="phone">Phone number:</label>
+    <input type="text" id="phone">
+    <span id="message"></span>
+    <br><br>
+
+    <label>Select a time:</label><br>
+    <input type="radio" name="time" value="05:00" checked> 05:00<br>
+    <input type="radio" name="time" value="06:00"> 06:00<br>
+    <input type="radio" name="time" value="07:00"> 07:00<br>
+    <input type="radio" name="time" value="08:00"> 08:00<br><br>
+
+    <label>What would you like to have with us?</label><br>
+    <input type="checkbox" value="Starters"> Starters<br>
+    <input type="checkbox" value="Main_Course"> Main_Course<br>
+    <input type="checkbox" value="Desserts"> Desserts<br>
+    <input type="checkbox" value="Drinks"> Drinks<br><br>
+
+    <button id="submitBtn" disabled>Submit</button>
+    <span id="output">. . .</span>
+  </fieldset>
+
+  <script>
+    const nameInput = document.getElementById('name');
+    const phoneInput = document.getElementById('phone');
+    const message = document.getElementById('message');
+    const submitBtn = document.getElementById('submitBtn');
+    const output = document.getElementById('output');
+
+    let nameValid = false;
+    let phoneValid = false;
+
+    function validateName() {
+      const name = nameInput.value.trim();
+      if (name === '') {
+        message.textContent = 'Error: Name is empty.';
+        nameInput.className = 'error';
+        nameValid = false;
+      } else if (name.split(' ').length < 2) {
+        message.textContent = 'Error: First and last name are required.';
+        nameInput.className = 'error';
+        nameValid = false;
+      } else {
+        message.textContent = '';
+        nameInput.className = 'valid';
+        nameValid = true;
+      }
+      validateForm();
+    }
+
+    function validatePhone() {
+      const phone = phoneInput.value.trim();
+      if (phone === '') {
+        message.textContent = 'Error: Phone number is empty.';
+        phoneInput.className = 'error';
+        phoneValid = false;
+      } else if (phone.length !== 6 || isNaN(phone)) {
+        message.textContent = 'Error: Phone number must be 6 digits.';
+        phoneInput.className = 'error';
+        phoneValid = false;
+      } else {
+        message.textContent = '';
+        phoneInput.className = 'valid';
+        phoneValid = true;
+      }
+      validateForm();
+    }
+
+    function validateForm() {
+      submitBtn.disabled = !(nameValid && phoneValid);
+    }
+
+    nameInput.addEventListener('blur', validateName);
+    nameInput.addEventListener('input', validateName);
+    phoneInput.addEventListener('blur', validatePhone);
+    phoneInput.addEventListener('input', validatePhone);
+
+    submitBtn.addEventListener('click', () => {
+      const name = nameInput.value.trim();
+      const phone = phoneInput.value.trim();
+      const time = document.querySelector('input[name="time"]:checked').value;
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]:checked');
+      const items = Array.from(checkboxes).map(cb => cb.value).join(', ') || 'Nothing selected';
+      output.textContent = `Reservation for: ${name} | Phone: (${phone}) | Time: ${time} | Selected items: ${items}`;
+    });
+  </script>
+
+</body>
+</html>
